@@ -42,10 +42,10 @@ def zip_photos(zip_name: str):
     
     files_to_zip = get_all_image_files(source_folder)
     
-    if not label_2_path and label_1_path:
+    if not any(label_1_path.iterdir()) and not any(label_2_path.iterdir()):
         print("Brak zdjęć do spakowania. Kod zatrzymany.")
         return
-    
+
     print("Resizing images...")
     process_images(label_1_path, output_size=(64, 64))
     process_images(label_2_path, output_size=(64, 64))
