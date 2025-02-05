@@ -2,14 +2,7 @@ import os
 import zipfile
 from pathlib import Path
 from PIL import Image
-
-
-def prepare_directory(directory: Path):
-    if not directory.exists():
-        print(f"Did not find {directory}, creating one...")
-        directory.mkdir(parents=True, exist_ok=True)
-    else:
-        print(f"{directory} directory exists.")
+from modules.utils import prepare_directory
 
 def resize_image(image_path: Path, output_size=(64, 64)):
     with Image.open(image_path) as img:
