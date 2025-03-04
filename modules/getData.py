@@ -14,7 +14,6 @@ def get_data_from_github(placeholder: str):
 
     with open(data_path / f"{placeholder}.zip", "wb") as f:
         request = requests.get(f"https://github.com/gmorlo/goose_ducks_DL/raw/main/data/zip/{placeholder}.zip")
-        # request = requests.get(f"https://github.com/gmorlo/goose_ducks_DL/raw/main/data/zip/goose_ducks_labeled.zip")
 
         print(f"Downloading {placeholder} data...")
         print(f"Response status code: {request.status_code}")
