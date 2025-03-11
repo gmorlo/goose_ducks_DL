@@ -77,6 +77,12 @@ def train(
         "test_accuracy": [],
     }
 
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', patience=3, factor=0.5, verbose=True)
+
+    early_stopping_patience = 5
+    best_loss = float("inf")
+    epochs_no_improve = 0
+
     for epoch in tqdm(range(epochs)):
         train_loss, train_accuracy = train_step(
             model=model, 
@@ -103,6 +109,19 @@ def train(
         results["train_accuracy"].append(train_accuracy)
         results["test_loss"].append(test_loss)
         results["test_accuracy"].append(test_accuracy)
+
+        # Adjust learning rate if needed
+        scheduler.step(test_loss)
+
+        # Early stopping
+        if test_loss < best_loss:
+            best_loss = test_loss
+            epochs_no_improve = 0
+        else:
+            epochs_no_improve += 1
+            if epochs_no_improve >= early_stopping_patience:
+                print("Early stopping triggered!")
+                break
 
     return results
 
