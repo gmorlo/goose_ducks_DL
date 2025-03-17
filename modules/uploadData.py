@@ -15,28 +15,46 @@ def process_images(directory: Path, output_size=(64, 64)):
         if file.suffix.lower() in [".jpg", ".jpeg", ".png", ".gif", ".bmp"]:
             resize_image(file, output_size)
 
-def get_all_image_files(directory: Path, max_files=100):
-    all_files = [file for file in directory.rglob("*") if file.suffix.lower() in [".jpg", ".jpeg", ".png", ".gif", ".bmp"]]
-    return random.sample(all_files, min(len(all_files), max_files))
+def get_all_image_files(directory: Path, max_files_per_class=100):
+    all_files = []
+    class_folders = [folder for folder in directory.iterdir() if folder.is_dir()]
+
+    for class_folder in class_folders:
+        class_images = [file for file in class_folder.rglob("*") if file.suffix.lower() in [".jpg", ".jpeg", ".png", ".gif", ".bmp"]]
+        
+        selected_images = random.sample(class_images, min(len(class_images), max_files_per_class))
+        all_files.extend(selected_images)
+
+    return all_files
 
 def split_and_move_images(files, train_dir, test_dir, split_ratio=0.8):
-    random.shuffle(files)
-    split_index = int(len(files) * split_ratio)
+    class_files = {}
     
-    train_files = files[:split_index]
-    test_files = files[split_index:]
-    
-    for file in train_files:
+    # Group images by class
+    for file in files:
         category = file.parent.name
-        target_folder = train_dir / category
-        prepare_directory(target_folder)
-        file.rename(target_folder / file.name)
+        if category not in class_files:
+            class_files[category] = []
+        class_files[category].append(file)
 
-    for file in test_files:
-        category = file.parent.name
-        target_folder = test_dir / category
-        prepare_directory(target_folder)
-        file.rename(target_folder / file.name)
+    # Process each class separately
+    for category, images in class_files.items():
+        random.shuffle(images)
+        split_index = int(len(images) * split_ratio)
+        
+        train_files = images[:split_index]
+        test_files = images[split_index:]
+        
+        # Move files
+        for file in train_files:
+            target_folder = train_dir / category
+            prepare_directory(target_folder)
+            file.rename(target_folder / file.name)
+
+        for file in test_files:
+            target_folder = test_dir / category
+            prepare_directory(target_folder)
+            file.rename(target_folder / file.name)
 
 def zip_directory(source_folder: Path, data_path_for_zip: Path, zip_name: str):
     zip_path = data_path_for_zip / f"{zip_name}.zip"
@@ -61,7 +79,7 @@ def zip_data(zip_name: str):
     prepare_directory(train_folder)
     prepare_directory(test_folder)
     
-    files_to_process = get_all_image_files(photos_source, max_files=100)
+    files_to_process = get_all_image_files(photos_source)
     
     if not files_to_process:
         print("Brak zdjęć do przetworzenia.")
