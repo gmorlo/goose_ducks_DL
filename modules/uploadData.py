@@ -27,7 +27,7 @@ def get_all_image_files(directory: Path, max_files_per_class=100):
 
     return all_files
 
-def split_and_move_images(files, train_dir, test_dir, split_ratio=0.8):
+def split_and_move_images(files, train_dir, test_dir, split_ratio=0.7):
     class_files = {}
     
     # Group images by class

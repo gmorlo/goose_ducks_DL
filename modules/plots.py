@@ -89,3 +89,46 @@ def pred_and_plot_image(model: torch.nn.Module,
         title = f"Pred: {target_image_pred_label} | Prob: {target_image_pred_probs.max().cpu():.3f}"
     plt.title(title)
     plt.axis(False)
+
+# def pred_and_plot_image(model: torch.nn.Module, 
+#                         image_path: str, 
+#                         class_names: List[str] = None, 
+#                         transform=None,
+#                         device: torch.device = torch.device("cpu")):
+#     """Makes a prediction on a target image and plots the image with its prediction."""
+
+#     # 1. Load in image and convert the tensor values to float32
+#     target_image = torchvision.io.read_image(str(image_path)).float()
+
+#     # 2. Check if the image has 1 channel (grayscale), convert it to 3 channels (RGB)
+#     if target_image.shape[0] == 1:  # Grayscale image (C=1, H, W)
+#         target_image = target_image.repeat(3, 1, 1)  # Convert to (3, H, W)
+
+#     # 3. Normalize pixel values to [0, 1]
+#     target_image = target_image / 255.0
+
+#     # 4. Apply transformation if provided
+#     if transform:
+#         target_image = transform(target_image)
+
+#     # 5. Ensure the model is on the correct device
+#     model.to(device)
+
+#     # 6. Prepare image for inference
+#     model.eval()
+#     with torch.inference_mode():
+#         target_image = target_image.unsqueeze(0).to(device)  # Add batch dim and move to device
+#         target_image_pred = model(target_image)
+
+#     # 7. Convert logits -> probabilities using softmax
+#     target_image_pred_probs = torch.softmax(target_image_pred, dim=1)
+
+#     # 8. Get the predicted class label
+#     target_image_pred_label = torch.argmax(target_image_pred_probs, dim=1).cpu().item()
+
+#     # 9. Plot the image with the prediction
+#     plt.imshow(target_image.squeeze().permute(1, 2, 0))  # Convert (C, H, W) → (H, W, C) for matplotlib
+#     plt.title(f"Pred: {class_names[target_image_pred_label] if class_names else target_image_pred_label} "
+#               f"| Prob: {target_image_pred_probs.max().cpu().item():.3f}")
+#     plt.axis(False)
+#     plt.show()
