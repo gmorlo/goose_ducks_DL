@@ -1,6 +1,6 @@
 import os
 import torch
-import data_setup, engine, model_builder, utils
+import data_setup, engine, model_builder_TinyVGG, utils
 
 from torchvision import transforms
 
@@ -23,6 +23,7 @@ train_dir = "data/goose_ducks_dataset/test"
 test_dir = "data/goose_ducks_dataset/train"
 
 if __name__ == "__main__":
+    
     train_dataloader, test_dataloader, class_names = data_setup.create_dataloaders(
         train_dir = train_dir,
         test_dir = test_dir,
@@ -31,7 +32,7 @@ if __name__ == "__main__":
     )
 
     torch.manual_seed(42)
-    model = model_builder.TinyVGG(
+    model = model_builder_TinyVGG.TinyVGG(
         input_shape=3,
         hidden_units=HIDDEN_UNITS, 
         output_shape=len(class_names)
