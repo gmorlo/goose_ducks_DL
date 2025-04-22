@@ -21,7 +21,7 @@ A deep learning project to classify geese vs ducks in images using CNN (Convolut
 1. **Clone the Repository:**
 
    ```bash
-   git clone https://github.com/<your-username>/goose_ducks_DL.git
+   git clone https://github.com/gmorlo/goose_ducks_DL.git
    cd goose_ducks_DL
    ```
 
