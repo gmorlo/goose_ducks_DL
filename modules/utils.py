@@ -27,13 +27,13 @@ def remove_directory(directory: Path):
 def save_model(
         model: torch.nn.Module,
         target_directory: str,
-        model_name: str,
+        model_path_name: str,
 ):
     target_directory_path = Path(target_directory)
     target_directory_path.mkdir(parents=True, exist_ok=True)
 
-    assert model_name.endswith(".pth") or model_name.endswith(".pt"), "model_name must end with .pth or .pt"
-    model_save_path = target_directory_path / model_name
+    assert model_path_name.endswith(".pth") or model_path_name.endswith(".pt"), "model_path_name must end with .pth or .pt"
+    model_save_path = target_directory_path / model_path_name
 
     print(f"Saving model to {model_save_path}")
     torch.save(
